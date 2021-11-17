@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DManage.SystemManagement.Domain.Interface
 {
@@ -11,7 +12,7 @@ namespace DManage.SystemManagement.Domain.Interface
 
         void DeleteById(object id);
 
-        IEnumerable<TEntity> Get(
+        Task<IEnumerable<TEntity>> Get(
 
             Expression<Func<TEntity, bool>> filter = null,
 
@@ -19,12 +20,14 @@ namespace DManage.SystemManagement.Domain.Interface
 
             string includeProperties = "");
         IQueryable<TEntity> GetAll();
-        TEntity GetById(object id);
+        Task<TEntity> GetById(object id);
         TEntity Insert(TEntity entity);
 
         void Update(TEntity entityToUpdate);
 
-        TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
+        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
+
+        Task<bool> Any(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
 
     }
 }

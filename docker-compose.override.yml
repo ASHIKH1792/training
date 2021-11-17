@@ -1,8 +1,20 @@
 version: '3.4'
 
 services:
+  sqldata:
+    environment:
+      - SA_PASSWORD=Pa55word
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - dmanage-sqldata:/var/opt/mssql
+
   dmanage.systemmanagement.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "80"
+      - "65084:80"
+volumes:
+  dmanage-sqldata:
+    external: false

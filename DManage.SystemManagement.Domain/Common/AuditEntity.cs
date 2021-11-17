@@ -2,9 +2,9 @@
 
 namespace DManage.SystemManagement.Domain.Common
 {
-    public class AuditEntity
+    public abstract class AuditEntity
     {
-        public long Id { get; set; }
+        public virtual int Id { get; set; }
 
         public DateTime CreationTime { get; set; }
 

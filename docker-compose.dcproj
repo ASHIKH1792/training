@@ -5,7 +5,7 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>baf1f710-c0f2-4bcd-890f-e799de69c91a</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/weatherforecast</DockerServiceUrl>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/Home/Index</DockerServiceUrl>
     <DockerServiceName>dmanage.systemmanagement.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>

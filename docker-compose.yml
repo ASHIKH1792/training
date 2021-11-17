@@ -1,6 +1,9 @@
 version: '3.4'
 
 services:
+  sqldata:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+
   dmanage.systemmanagement.api:
     image: ${DOCKER_REGISTRY-}dmanagesystemmanagementapi
     build:

@@ -8,7 +8,7 @@ namespace DManage.SystemManagement.Infrastructure.Persistence
         public SystemManagementDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<SystemManagementDbContext>()
-               .UseSqlServer("Data Source=localhost,5533;Initial Catalog=SystemManagement;user Id=sa;Password=Pa55word");
+               .UseSqlServer("Data Source=localhost,1433;Initial Catalog=SystemManagementDb;user Id=sa;Password=Pa55word");
             return new SystemManagementDbContext(optionsBuilder.Options);
         }
     }
