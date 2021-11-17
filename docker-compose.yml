@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  dmanage.systemmanagement.api:
+    image: ${DOCKER_REGISTRY-}dmanagesystemmanagementapi
+    build:
+      context: .
+      dockerfile: DManage.SystemManagement.API/Dockerfile
