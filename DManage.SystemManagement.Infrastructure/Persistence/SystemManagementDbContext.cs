@@ -51,10 +51,7 @@ namespace DManage.SystemManagement.Infrastructure.Persistence
         {
             foreach (var item in ChangeTracker.Entries())
             {
-                if (item.Metadata.FindProperty("CreatorUserId") != null)
-                {
-                    AddAudit(item);
-                }
+                AddAudit(item);
             }
         }
 

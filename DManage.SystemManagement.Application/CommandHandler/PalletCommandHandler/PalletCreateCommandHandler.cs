@@ -1,7 +1,9 @@
 ﻿using DManage.SystemManagement.Application.Common.Internal;
 using DManage.SystemManagement.Domain.Entities;
 using DManage.SystemManagement.Domain.Interface;
+using DotNetCore.CAP;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,9 +19,11 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
     public class PalletCreateCommandHandler : IRequestHandler<PalletCreateCommand, ResponseMessage>
     {
         private readonly IUnitOfWork _unitofWork;
-        public PalletCreateCommandHandler(IUnitOfWork unitofWork)
+        private readonly ICapPublisher _capPublisher;
+        public PalletCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher)
         {
             _unitofWork = unitofWork;
+            _capPublisher = capPublisher;
         }
         public async Task<ResponseMessage> Handle(PalletCreateCommand request, CancellationToken cancellationToken)
         {
@@ -28,6 +32,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
             {
+                 _capPublisher.Publish("SystemManage.Pallet.Create",new {Id=pallet.Id,Name=pallet.Name, ProductTypeId=pallet.ProductTypeId, Quantity=pallet.Quantity,EventId=Guid.NewGuid() });
                 return new ResponseMessage()
                 {
                     Id = pallet.Id,

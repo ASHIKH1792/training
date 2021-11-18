@@ -50,7 +50,7 @@ namespace DManage.SystemManagement.API
             services.AddScoped<IRetryMechanism, RetryMechanism>();
             services.AddCustomDbContext(Configuration);
             services.InitialiseDatabase(Configuration.GetValue<int>("InitialiseDatabaseRetryCount"));
-            //services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddEventBus(Configuration);
             services.AddScoped<IUserService, UserService>();            
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
