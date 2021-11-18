@@ -31,6 +31,8 @@ namespace DManage.SystemManagement.Infrastructure.Persistence
         public DbSet<WareHouseNodeMapping> WareHouseNodeMapping { get; set; }
         public DbSet<Pallet> Pallet { get; set; }
 
+        public DbSet<PalletLpnMapping> PalletLpnMapping { get; set; }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             OnBeforeSaving();

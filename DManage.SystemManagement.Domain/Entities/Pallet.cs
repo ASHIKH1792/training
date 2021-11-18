@@ -11,10 +11,6 @@ namespace DManage.SystemManagement.Domain.Entities
 
         public long Quantity { get; set; }
 
-        public long LicensePlateNumberId { get; set; }
-
-        public LicensePlateNumber LicensePlateNumber { get; set; }
-
         public ProductType ProductType{ get; set; }
 
     }

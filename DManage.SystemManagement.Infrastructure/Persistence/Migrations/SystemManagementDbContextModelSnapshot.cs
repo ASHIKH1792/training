@@ -108,9 +108,6 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<long>("LicensePlateNumberId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -130,11 +127,49 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LicensePlateNumberId");
-
                     b.HasIndex("ProductTypeId");
 
                     b.ToTable("Pallet");
+                });
+
+            modelBuilder.Entity("DManage.SystemManagement.Domain.Entities.PalletLpnMapping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("LicensePlateNumberId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PalletId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("UpdationUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LicensePlateNumberId");
+
+                    b.HasIndex("PalletId");
+
+                    b.ToTable("PalletLpnMapping");
                 });
 
             modelBuilder.Entity("DManage.SystemManagement.Domain.Entities.ProductType", b =>
@@ -303,21 +338,32 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("DManage.SystemManagement.Domain.Entities.Pallet", b =>
                 {
-                    b.HasOne("DManage.SystemManagement.Domain.Entities.LicensePlateNumber", "LicensePlateNumber")
-                        .WithMany()
-                        .HasForeignKey("LicensePlateNumberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DManage.SystemManagement.Domain.Entities.ProductType", "ProductType")
                         .WithMany()
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("ProductType");
+                });
+
+            modelBuilder.Entity("DManage.SystemManagement.Domain.Entities.PalletLpnMapping", b =>
+                {
+                    b.HasOne("DManage.SystemManagement.Domain.Entities.LicensePlateNumber", "LicensePlateNumber")
+                        .WithMany()
+                        .HasForeignKey("LicensePlateNumberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DManage.SystemManagement.Domain.Entities.Pallet", "Pallet")
+                        .WithMany()
+                        .HasForeignKey("PalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("LicensePlateNumber");
 
-                    b.Navigation("ProductType");
+                    b.Navigation("Pallet");
                 });
 
             modelBuilder.Entity("DManage.SystemManagement.Domain.Entities.WareHouseNodeMapping", b =>

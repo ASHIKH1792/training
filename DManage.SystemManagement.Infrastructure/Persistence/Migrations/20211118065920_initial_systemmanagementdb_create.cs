@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
 {
-    public partial class Initial_Create_SystemManagement_Table : Migration
+    public partial class initial_systemmanagementdb_create : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -91,6 +91,33 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pallet",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ProductTypeId = table.Column<long>(type: "bigint", nullable: false),
+                    Quantity = table.Column<long>(type: "bigint", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreationUserId = table.Column<long>(type: "bigint", nullable: false),
+                    UpdationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdationUserId = table.Column<long>(type: "bigint", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletionTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pallet", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pallet_ProductType_ProductTypeId",
+                        column: x => x.ProductTypeId,
+                        principalTable: "ProductType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WareHouseNodeMapping",
                 columns: table => new
                 {
@@ -155,14 +182,12 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pallet",
+                name: "PalletLpnMapping",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ProductTypeId = table.Column<long>(type: "bigint", nullable: false),
-                    Quantity = table.Column<long>(type: "bigint", nullable: false),
+                    PalletId = table.Column<long>(type: "bigint", nullable: false),
                     LicensePlateNumberId = table.Column<long>(type: "bigint", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreationUserId = table.Column<long>(type: "bigint", nullable: false),
@@ -173,17 +198,17 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pallet", x => x.Id);
+                    table.PrimaryKey("PK_PalletLpnMapping", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pallet_LicensePlateNumber_LicensePlateNumberId",
+                        name: "FK_PalletLpnMapping_LicensePlateNumber_LicensePlateNumberId",
                         column: x => x.LicensePlateNumberId,
                         principalTable: "LicensePlateNumber",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Pallet_ProductType_ProductTypeId",
-                        column: x => x.ProductTypeId,
-                        principalTable: "ProductType",
+                        name: "FK_PalletLpnMapping_Pallet_PalletId",
+                        column: x => x.PalletId,
+                        principalTable: "Pallet",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -194,14 +219,19 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
                 column: "NodeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pallet_LicensePlateNumberId",
-                table: "Pallet",
-                column: "LicensePlateNumberId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Pallet_ProductTypeId",
                 table: "Pallet",
                 column: "ProductTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PalletLpnMapping_LicensePlateNumberId",
+                table: "PalletLpnMapping",
+                column: "LicensePlateNumberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PalletLpnMapping_PalletId",
+                table: "PalletLpnMapping",
+                column: "PalletId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WareHouseNodeMapping_NodeId",
@@ -227,7 +257,7 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Pallet");
+                name: "PalletLpnMapping");
 
             migrationBuilder.DropTable(
                 name: "WareHouseNodeMapping");
@@ -239,13 +269,16 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
                 name: "LicensePlateNumber");
 
             migrationBuilder.DropTable(
-                name: "ProductType");
+                name: "Pallet");
 
             migrationBuilder.DropTable(
                 name: "WareHouse");
 
             migrationBuilder.DropTable(
                 name: "Node");
+
+            migrationBuilder.DropTable(
+                name: "ProductType");
         }
     }
 }

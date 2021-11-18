@@ -1,11 +1,10 @@
-﻿using DManage.SystemManagement.Application.CommandHandler.WarehouseCommandHandler;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace DManage.SystemManagement.Application.CommandHandler.StudentCommandHandler
+namespace DManage.SystemManagement.Application.CommandHandler.WarehouseCommandHandler.Validator
 {
-    public class WareHouseUpdateValidatorHandler : AbstractValidator<WareHouseUpdateCommand>
+    public class WareHouseCreateValidatorHandler : AbstractValidator<WareHouseCreateCommand>
     {
-        public WareHouseUpdateValidatorHandler()
+        public WareHouseCreateValidatorHandler()
         {
             RuleFor(v => v.Name)
                .NotEmpty().WithMessage("Name is required.")

@@ -9,6 +9,8 @@ namespace DManage.SystemManagement.Domain.Interface
         IRepository<WareHouse> WareHouseRepository { get; }
         IRepository<Pallet> PalletRepository { get; }
 
+        IRepository<PalletLpnMapping> PalletLpnRepository { get; }
+
         IRepository<ProductType> ProductTypeRepository { get; }
         IRepository<LicensePlateNumber> LicensePlateNumberRepository { get; }
 

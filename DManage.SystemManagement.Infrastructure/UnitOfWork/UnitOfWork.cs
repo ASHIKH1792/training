@@ -16,7 +16,8 @@ namespace DManage.SystemManagement.Infrastructure.UnitOfWork
             IRepository<Node> nodeRepository,
             IRepository<LicensePlateNumber> licensePlateNumberRepository,
             IRepository<Pallet> palletRepository,
-            IRepository<ProductType> productTypeRepository)
+            IRepository<ProductType> productTypeRepository,
+            IRepository<PalletLpnMapping> palletLpnRepository)
         {
             WareHouseRepository = wareHouseRepository;
             WareHouseNodeMappingRepository = wareHouseNodeMappingRepository;
@@ -25,11 +26,12 @@ namespace DManage.SystemManagement.Infrastructure.UnitOfWork
             LicensePlateNumberRepository = licensePlateNumberRepository;
             PalletRepository = palletRepository;
             ProductTypeRepository = productTypeRepository;
+            PalletLpnRepository = palletLpnRepository;
             _dbContext = dbContext;
         }
         public IRepository<WareHouse> WareHouseRepository { get; }
         public IRepository<Pallet> PalletRepository { get; }
-
+        public IRepository<PalletLpnMapping> PalletLpnRepository { get; }
         public IRepository<ProductType> ProductTypeRepository { get; }
         public IRepository<LicensePlateNumber> LicensePlateNumberRepository { get; }
 

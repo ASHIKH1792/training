@@ -2,7 +2,7 @@
 using DManage.SystemManagement.Domain.Interface;
 using FluentValidation;
 
-namespace DManage.SystemManagement.Application.CommandHandler.StudentCommandHandler
+namespace DManage.SystemManagement.Application.CommandHandler.WarehouseCommandHandler
 {
     public class WareHouseDeleteValidatorHandler : AbstractValidator<WareHouseDeleteCommand>
     {

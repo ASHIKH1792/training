@@ -9,6 +9,13 @@ namespace DManage.SystemManagement.Application.AutoMapper
         public AutoMapping()
         {
             CreateMap<WareHouse, WareHouseDto>();
+            CreateMap<ProductType, ProductTypeDto>();
+            CreateMap<Node, NodeDto>();
+            CreateMap<LicensePlateNumber, LpnDto>();
+            CreateMap<Pallet, PalletDto>();
+            CreateMap<PalletLpnMapping, PalletLpnDto>();
+            CreateMap<WareHouseNodeMapping, WareHouseNodeDto>();
+            CreateMap<WareHouseProductTypeMapping, WareHouseProductTypeDto>();
 
         }
     }
