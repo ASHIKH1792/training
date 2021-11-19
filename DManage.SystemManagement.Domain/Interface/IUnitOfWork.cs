@@ -18,6 +18,10 @@ namespace DManage.SystemManagement.Domain.Interface
         IRepository<WareHouseProductTypeMapping> WareHouseProductTypeMappingRepository { get; }
 
         IRepository<Node> NodeRepository { get; }
+
+        IRepository<Trucks> TruckRepository { get; }
+
+        IRepository<Drivers> DriverRepository { get; }
         Task<int> CommitAsync(CancellationToken cancellationToken);
     }
 }

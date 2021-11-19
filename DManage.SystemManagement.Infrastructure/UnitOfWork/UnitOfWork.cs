@@ -17,7 +17,9 @@ namespace DManage.SystemManagement.Infrastructure.UnitOfWork
             IRepository<LicensePlateNumber> licensePlateNumberRepository,
             IRepository<Pallet> palletRepository,
             IRepository<ProductType> productTypeRepository,
-            IRepository<PalletLpnMapping> palletLpnRepository)
+            IRepository<PalletLpnMapping> palletLpnRepository,
+            IRepository<Drivers> driverRepository,
+            IRepository<Trucks> truckRepository)
         {
             WareHouseRepository = wareHouseRepository;
             WareHouseNodeMappingRepository = wareHouseNodeMappingRepository;
@@ -27,6 +29,8 @@ namespace DManage.SystemManagement.Infrastructure.UnitOfWork
             PalletRepository = palletRepository;
             ProductTypeRepository = productTypeRepository;
             PalletLpnRepository = palletLpnRepository;
+            DriverRepository = driverRepository;
+            TruckRepository = truckRepository;
             _dbContext = dbContext;
         }
         public IRepository<WareHouse> WareHouseRepository { get; }
@@ -39,6 +43,10 @@ namespace DManage.SystemManagement.Infrastructure.UnitOfWork
         public IRepository<WareHouseProductTypeMapping> WareHouseProductTypeMappingRepository { get; }
 
         public IRepository<Node> NodeRepository { get; }
+
+        public IRepository<Trucks> TruckRepository { get; }
+
+        public IRepository<Drivers> DriverRepository { get; }
 
         public async Task<int> CommitAsync(CancellationToken cancellationToken)
         {

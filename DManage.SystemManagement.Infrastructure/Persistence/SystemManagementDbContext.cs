@@ -33,6 +33,10 @@ namespace DManage.SystemManagement.Infrastructure.Persistence
 
         public DbSet<PalletLpnMapping> PalletLpnMapping { get; set; }
 
+        public DbSet<Trucks> Trucks { get; set; }
+
+        public DbSet<Drivers> Drivers { get; set; }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             OnBeforeSaving();

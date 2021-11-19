@@ -32,7 +32,8 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
             {
-                 _capPublisher.Publish("SystemManage.Pallet.Create",new {Id=pallet.Id,Name=pallet.Name, ProductTypeId=pallet.ProductTypeId, Quantity=pallet.Quantity,EventId=Guid.NewGuid() });
+                PublishMessage(pallet);
+
                 return new ResponseMessage()
                 {
                     Id = pallet.Id,
@@ -46,6 +47,11 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
                     Message = ResponseMessageConstant.Failed
                 };
             }
+        }
+
+        private void PublishMessage(Pallet pallet)
+        {
+            _capPublisher.Publish("SystemManage.Pallet.Create", new { Id = pallet.Id, Name = pallet.Name, ProductTypeId = pallet.ProductTypeId, Quantity = pallet.Quantity, EventId = Guid.NewGuid() });
         }
     }
 }
