@@ -4,14 +4,16 @@ using DManage.SystemManagement.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DManage.SystemManagement.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SystemManagementDbContext))]
-    partial class SystemManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211119174729_add_truc_driver_table")]
+    partial class add_truc_driver_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

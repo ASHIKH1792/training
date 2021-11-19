@@ -10,6 +10,7 @@ namespace DManage.SystemManagement.API.Controllers
     [ApiController]
     public class TruckController : BaseApiController
     {
+        [HttpPost]
         public async Task<ResponseMessage> CreateTruck(TruckCreateCommand command)
         {
             return await Mediator.Send(command);

@@ -49,6 +49,8 @@ namespace DManage.SystemManagement.Infrastructure.Persistence
             builder.ApplyConfiguration(new NodeEntityConfiguration());
             builder.ApplyConfiguration(new PalletEntityConfiguration());
             builder.ApplyConfiguration(new ProductTypeEntityConfiguration());
+            builder.ApplyConfiguration(new DriverEntityConfiguration());
+            builder.ApplyConfiguration(new TruckEntityConfiguration());
             base.OnModelCreating(builder);
         }
         private void OnBeforeSaving()

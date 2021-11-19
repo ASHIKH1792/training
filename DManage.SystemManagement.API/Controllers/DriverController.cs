@@ -10,6 +10,7 @@ namespace DManage.SystemManagement.API.Controllers
     [ApiController]
     public class DriverController : BaseApiController
     {
+        [HttpPost]
         public async Task<ResponseMessage> CreateDriver(DriverCreateCommand  command)
         {
             return await Mediator.Send(command);
