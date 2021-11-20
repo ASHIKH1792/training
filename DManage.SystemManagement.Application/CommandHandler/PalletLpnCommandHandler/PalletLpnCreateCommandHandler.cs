@@ -1,6 +1,7 @@
 ﻿using DManage.SystemManagement.Application.Common.Internal;
 using DManage.SystemManagement.Domain.Entities;
 using DManage.SystemManagement.Domain.Interface;
+using DotNetCore.CAP;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,9 +17,11 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
     public class PalletLpnCreateCommandHandler : IRequestHandler<PalletLpnCreateCommand, ResponseMessage>
     {
         private readonly IUnitOfWork _unitofWork;
-        public PalletLpnCreateCommandHandler(IUnitOfWork unitofWork)
+        private readonly ICapPublisher _cappublisher;
+        public PalletLpnCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher cappublisher)
         {
             _unitofWork = unitofWork;
+            _cappublisher = cappublisher;
         }
         public async Task<ResponseMessage> Handle(PalletLpnCreateCommand request, CancellationToken cancellationToken)
         {
@@ -27,6 +30,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
             {
+                await PublishMessage(request.PalletId,request.LicensePlateNumberId);
                 return new ResponseMessage()
                 {
                     Id = palletLpn.Id,
@@ -40,6 +44,12 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
                     Message = ResponseMessageConstant.Failed
                 };
             }
+        }
+
+        private async Task PublishMessage(long palletId,long lpnId)
+        {
+            LicensePlateNumber lpn = await _unitofWork.LicensePlateNumberRepository.FirstOrDefaultAsync(s => s.Id == lpnId,"Node");
+            await _cappublisher.PublishAsync("SystemManage.Truck.Create", new { LpnId = lpn.Id, NodeName = lpn.Node, PalletId = palletId });
         }
     }
 }

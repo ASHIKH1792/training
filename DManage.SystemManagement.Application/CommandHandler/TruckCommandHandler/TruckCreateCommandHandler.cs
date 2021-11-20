@@ -31,7 +31,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.TruckCommandHandle
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
             {
-                PublishMessage(truck);
+                await PublishMessage(truck);
                 return new ResponseMessage()
                 {
                     Id = truck.Id,
@@ -47,9 +47,9 @@ namespace DManage.SystemManagement.Application.CommandHandler.TruckCommandHandle
             }
         }
 
-        private void PublishMessage(Trucks truck)
+        private async Task PublishMessage(Trucks truck)
         {
-            _capPublisher.Publish("SystemManage.Pallet.Create", new { Id = truck.Id, RegistrationNumber = truck.RegistrationNumber, Model = truck.Model });
+            await _capPublisher.PublishAsync("SystemManage.Truck.Create", new { Id = truck.Id, RegistrationNumber = truck.RegistrationNumber, Model = truck.Model });
         }
     }
 }

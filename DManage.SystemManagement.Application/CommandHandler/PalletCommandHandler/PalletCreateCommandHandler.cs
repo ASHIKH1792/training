@@ -51,7 +51,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
 
         private void PublishMessage(Pallet pallet)
         {
-            _capPublisher.Publish("SystemManage.Pallet.Create", new { Id = pallet.Id, Name = pallet.Name, ProductTypeId = pallet.ProductTypeId, Quantity = pallet.Quantity, EventId = Guid.NewGuid() });
+            _capPublisher.Publish("SystemManage.Pallet.Create", new { Id = pallet.Id, Name = pallet.Name, Quantity = pallet.Quantity,ProductTypeReferenceId=pallet.ProductType.ReferenceId, EventId = Guid.NewGuid() });
         }
     }
 }

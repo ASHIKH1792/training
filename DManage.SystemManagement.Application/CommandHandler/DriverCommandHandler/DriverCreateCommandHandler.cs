@@ -1,6 +1,7 @@
 ﻿using DManage.SystemManagement.Application.Common.Internal;
 using DManage.SystemManagement.Domain.Entities;
 using DManage.SystemManagement.Domain.Interface;
+using DotNetCore.CAP;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,9 +19,11 @@ namespace DManage.SystemManagement.Application.CommandHandler.DriverCommandHandl
     public class DriverCreateCommandHandler : IRequestHandler<DriverCreateCommand, ResponseMessage>
     {
         private readonly IUnitOfWork _unitofWork;
-        public DriverCreateCommandHandler(IUnitOfWork unitofWork)
+        private readonly ICapPublisher _capPublisher;
+        public DriverCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher)
         {
             _unitofWork = unitofWork;
+            _capPublisher = capPublisher;
         }
         public async Task<ResponseMessage> Handle(DriverCreateCommand request, CancellationToken cancellationToken)
         {
@@ -29,6 +32,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.DriverCommandHandl
             int result = await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
             {
+                await PublishMessage(driver);
                 return new ResponseMessage()
                 {
                     Id = driver.Id,
@@ -43,6 +47,10 @@ namespace DManage.SystemManagement.Application.CommandHandler.DriverCommandHandl
                     Message = ResponseMessageConstant.Failed
                 };
             }
+        }
+        private async Task PublishMessage(Drivers driver)
+        {
+            await _capPublisher.PublishAsync("SystemManage.Truck.Create", new { Id = driver.Id, FirstName = driver.FirstName, LastName = driver.LastName, MobileNumber = driver.MobileNumber });
         }
     }
 }
