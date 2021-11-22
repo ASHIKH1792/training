@@ -32,7 +32,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
             {
-                PublishMessage(pallet);
+                await PublishMessage(pallet);
 
                 return new ResponseMessage()
                 {
@@ -49,9 +49,10 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
             }
         }
 
-        private void PublishMessage(Pallet pallet)
+        private async Task PublishMessage(Pallet pallet)
         {
-            _capPublisher.Publish("SystemManage.Pallet.Create", new { Id = pallet.Id, Name = pallet.Name, Quantity = pallet.Quantity,ProductTypeReferenceId=pallet.ProductType.ReferenceId, EventId = Guid.NewGuid() });
+            Guid productRefereneId =  _unitofWork.ProductTypeRepository.FirstOrDefault(s => s.Id == pallet.ProductTypeId)?.ReferenceId??Guid.Empty;
+            await _capPublisher.PublishAsync("SystemManage.Pallet.Create", new { Id = pallet.Id, Name = pallet.Name, Quantity = pallet.Quantity,ProductTypeReferenceId= productRefereneId, EventId = Guid.NewGuid() });
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using DManage.SystemManagement.Application.Common.Internal;
 using DManage.SystemManagement.Domain.Entities;
 using DManage.SystemManagement.Domain.Interface;
+using DotNetCore.CAP;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,9 +16,11 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
     public class ProductTypeCreateCommandHandler : IRequestHandler<ProductTypeCreateCommand, ResponseMessage>
     {
         private readonly IUnitOfWork _unitofWork;
-        public ProductTypeCreateCommandHandler(IUnitOfWork unitofWork)
+        private readonly ICapPublisher _capPublisher;
+        public ProductTypeCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher)
         {
             _unitofWork = unitofWork;
+            _capPublisher = capPublisher;
         }
         public async Task<ResponseMessage> Handle(ProductTypeCreateCommand request, CancellationToken cancellationToken)
         {
@@ -25,6 +29,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
             {
+                await PublishMessage(productType);
                 return new ResponseMessage()
                 {
                     Id = productType.Id,
@@ -38,6 +43,11 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
                     Message = ResponseMessageConstant.Failed
                 };
             }
+        }
+
+        private async Task PublishMessage(ProductType productType)
+        {
+            await _capPublisher.PublishAsync("SystemManage.ProductType.Create", new { ProductTypeReferenceId=productType.ReferenceId, ProductTypeName = productType.Name,EventId=Guid.NewGuid() });
         }
     }
 }

@@ -49,7 +49,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
         private async Task PublishMessage(long palletId,long lpnId)
         {
             LicensePlateNumber lpn = await _unitofWork.LicensePlateNumberRepository.FirstOrDefaultAsync(s => s.Id == lpnId,"Node");
-            await _cappublisher.PublishAsync("SystemManage.Truck.Create", new { LpnId = lpn.Id, NodeName = lpn.Node, PalletId = palletId });
+            await _cappublisher.PublishAsync("SystemManage.Lpn.Create", new { LpnId = lpn.Id, NodeName = lpn.Node, PalletId = palletId });
         }
     }
 }

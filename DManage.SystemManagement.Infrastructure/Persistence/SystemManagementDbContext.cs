@@ -68,20 +68,20 @@ namespace DManage.SystemManagement.Infrastructure.Persistence
                 case EntityState.Deleted:
                     entry.State = EntityState.Modified;
                     entry.CurrentValues["IsDeleted"] = true;
-                    entry.CurrentValues["DeletedUserId"] = _userService.GetUserId();
+                    //entry.CurrentValues["DeletedUserId"] = _userService.GetUserId();
                     entry.CurrentValues["DeletionTime"] = DateTime.UtcNow;
                     break;
                 case EntityState.Added:
                     entry.State = EntityState.Added;
                     entry.CurrentValues["IsDeleted"] = false;
-                    entry.CurrentValues["CreatorUserId"] = _userService.GetUserId();
+                    entry.CurrentValues["CreationUserId"] = _userService.GetUserId();
                     entry.CurrentValues["CreationTime"] = DateTime.UtcNow;
                     break;
                 case EntityState.Modified:
                     entry.State = EntityState.Modified;
                     entry.CurrentValues["IsDeleted"] = false;
-                    entry.CurrentValues["ModifiedUserId"] = _userService.GetUserId();
-                    entry.CurrentValues["ModificationTime"] = DateTime.UtcNow;
+                    entry.CurrentValues["UpdationUserId"] = _userService.GetUserId();
+                    entry.CurrentValues["UpdationTime"] = DateTime.UtcNow;
                     break;
 
             }

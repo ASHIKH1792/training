@@ -110,6 +110,28 @@ namespace DManage.SystemManagement.Infrastructure.Repository
 
         }
 
+        public virtual TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "")
+        {
+
+            IQueryable<TEntity> query = dbSet;
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            if (filter != null)
+            {
+                return query?.FirstOrDefault(filter);
+            }
+            return  query.FirstOrDefault();
+
+        }
+
         public virtual async Task<bool> Any(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "")
         {
 

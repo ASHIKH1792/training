@@ -27,6 +27,8 @@ namespace DManage.SystemManagement.Domain.Interface
 
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
 
+        TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
+
         Task<bool> Any(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
 
     }
