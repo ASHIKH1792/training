@@ -3,6 +3,7 @@ using DManage.SystemManagement.Domain.Entities;
 using DManage.SystemManagement.Domain.Interface;
 using DotNetCore.CAP;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,7 +50,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
         private async Task PublishMessage(long palletId,long lpnId)
         {
             LicensePlateNumber lpn = await _unitofWork.LicensePlateNumberRepository.FirstOrDefaultAsync(s => s.Id == lpnId,"Node");
-            await _cappublisher.PublishAsync("SystemManage.Lpn.Create", new { LpnId = lpn.Id, NodeName = lpn.Node, PalletId = palletId });
+            await _cappublisher.PublishAsync("SystemManage.Lpn.Create", new { LpnId = lpn.Id, NodeName = lpn.Node.Name, PalletId = palletId,EventId=Guid.NewGuid() });
         }
     }
 }
