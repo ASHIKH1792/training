@@ -1,17 +1,23 @@
 using DManage.SystemManagement.API.Filter;
 using DManage.SystemManagement.Application.AutoMapper;
 using DManage.SystemManagement.Application.Dependency;
+using DManage.SystemManagement.Domain;
 using DManage.SystemManagement.Domain.Interface;
 using DManage.SystemManagement.Infrastructure.Common.Interface;
 using DManage.SystemManagement.Infrastructure.Common.Service;
 using DManage.SystemManagement.Infrastructure.Repository;
 using DManage.SystemManagement.Infrastructure.UnitOfWork;
+using IdentityModel;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
+using System.Text;
 
 namespace DManage.SystemManagement.API
 {
@@ -24,15 +30,14 @@ namespace DManage.SystemManagement.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ConfigurationSettings>(Configuration);
             services.AddControllers(o =>
             {
                 o.Filters.Add(typeof(GlobalApiExceptionFilter));
             });
             services.AddHttpContextAccessor();
-            //Swagger - Enable this line and the related lines in Configure method to enable swagger UI
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -40,13 +45,39 @@ namespace DManage.SystemManagement.API
                     Title = "DManage",
                     Version = "v1"
                 });
-                options.DocInclusionPredicate((docName, description) => true);
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Scheme = "bearer",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT"
+                });
 
-                //Note: This is just for showing Authorize button on the UI. 
-                //Authorize button's behaviour is handled in wwwroot/swagger/ui/index.html
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme());
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                        },
+                        new List<string>()
+                    }
+                });
+
             });
-
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.Authority = Configuration.Get<ConfigurationSettings>().Authority;
+                options.Audience = Configuration.Get<ConfigurationSettings>().Audience;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuers = Configuration.Get<ConfigurationSettings>().IssuerUri,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.Get<ConfigurationSettings>().ApiSecret.ToSha256()))
+                };
+                options.RequireHttpsMetadata = false;
+            });
             services.AddScoped<IRetryMechanism, RetryMechanism>();
             services.AddCustomDbContext(Configuration);
             services.InitialiseDatabase(Configuration.GetValue<int>("InitialiseDatabaseRetryCount"));
@@ -57,8 +88,6 @@ namespace DManage.SystemManagement.API
             services.AddAutoMapper(typeof(AutoMapping));
             services.AddApplication();
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -66,8 +95,9 @@ namespace DManage.SystemManagement.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseRouting();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

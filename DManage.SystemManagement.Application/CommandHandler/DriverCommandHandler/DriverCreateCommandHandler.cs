@@ -1,4 +1,5 @@
-﻿using DManage.SystemManagement.Application.Common.Internal;
+﻿using AutoMapper;
+using DManage.SystemManagement.Application.Common.Internal;
 using DManage.SystemManagement.Domain.Entities;
 using DManage.SystemManagement.Domain.Interface;
 using DotNetCore.CAP;
@@ -20,14 +21,16 @@ namespace DManage.SystemManagement.Application.CommandHandler.DriverCommandHandl
     {
         private readonly IUnitOfWork _unitofWork;
         private readonly ICapPublisher _capPublisher;
-        public DriverCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher)
+        private readonly IMapper _mapper;
+        public DriverCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher, IMapper mapper)
         {
             _unitofWork = unitofWork;
             _capPublisher = capPublisher;
+            _mapper = mapper;
         }
         public async Task<ResponseMessage> Handle(DriverCreateCommand request, CancellationToken cancellationToken)
         {
-            Drivers driver = new Drivers() { FirstName = request.FirstName, LastName = request.LastName, MobileNumber=request.MobileNumber };
+             Drivers driver = _mapper.Map<Drivers>(request);
             _unitofWork.DriverRepository.Insert(driver);
             int result = await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)

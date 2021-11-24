@@ -3,13 +3,15 @@ using DManage.SystemManagement.Application.CommandHandler.NodeCommandHandler;
 using DManage.SystemManagement.Application.Common.Internal;
 using DManage.SystemManagement.Application.Queries.Internal;
 using DManage.SystemManagement.Application.ResponseDto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace DManage.SystemManagement.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1.0/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class NodesController : BaseApiController
     {
         private readonly INodesQueries _queries;

@@ -17,7 +17,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.DriverCommandHandl
 
             RuleFor(v => v.MobileNumber)
       .NotEmpty().WithMessage("MobileNumber is required.")
-      .MaximumLength(15).WithMessage("MobileNumber must not exceed 50 characters.");
+      .MaximumLength(15).WithMessage("MobileNumber must not exceed 15 characters.");
         }
 
     }

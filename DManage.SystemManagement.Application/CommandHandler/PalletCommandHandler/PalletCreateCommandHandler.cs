@@ -1,4 +1,5 @@
-﻿using DManage.SystemManagement.Application.Common.Internal;
+﻿using AutoMapper;
+using DManage.SystemManagement.Application.Common.Internal;
 using DManage.SystemManagement.Domain.Entities;
 using DManage.SystemManagement.Domain.Interface;
 using DotNetCore.CAP;
@@ -20,14 +21,16 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
     {
         private readonly IUnitOfWork _unitofWork;
         private readonly ICapPublisher _capPublisher;
-        public PalletCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher)
+        private IMapper _mapper;
+        public PalletCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher, IMapper mapper)
         {
             _unitofWork = unitofWork;
             _capPublisher = capPublisher;
+            _mapper = mapper;
         }
         public async Task<ResponseMessage> Handle(PalletCreateCommand request, CancellationToken cancellationToken)
         {
-            Pallet pallet = new Pallet() { Name = request.Name,ProductTypeId=request.ProductTypeId,Quantity=request.Quantity };
+            Pallet pallet = _mapper.Map<Pallet>(request);
             _unitofWork.PalletRepository.Insert(pallet);
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
@@ -51,8 +54,11 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
 
         private async Task PublishMessage(Pallet pallet)
         {
-            Guid productRefereneId =  _unitofWork.ProductTypeRepository.FirstOrDefault(s => s.Id == pallet.ProductTypeId)?.ReferenceId??Guid.Empty;
-            await _capPublisher.PublishAsync("SystemManage.Pallet.Create", new { Id = pallet.Id, Name = pallet.Name, Quantity = pallet.Quantity,ProductTypeReferenceId= productRefereneId, EventId = Guid.NewGuid() });
+            var productType =await  _unitofWork.ProductTypeRepository.FirstOrDefaultAsync(s => s.Id == pallet.ProductTypeId,s=>new ProductType() {ReferenceId=s.ReferenceId });
+            if (productType != null)
+            {
+                await _capPublisher.PublishAsync("SystemManage.Pallet.Create", new { Id = pallet.Id, Name = pallet.Name, Quantity = pallet.Quantity, ProductTypeReferenceId = productType.ReferenceId, EventId = Guid.NewGuid() });
+            }
         }
     }
 }

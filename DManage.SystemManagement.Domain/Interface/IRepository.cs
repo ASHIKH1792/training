@@ -12,22 +12,17 @@ namespace DManage.SystemManagement.Domain.Interface
 
         void DeleteById(object id);
 
-        Task<IEnumerable<TEntity>> Get(
-
-            Expression<Func<TEntity, bool>> filter = null,
-
+        Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null, Expression<Func<TEntity, TEntity>> selector = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-
-            string includeProperties = "");
+            string includeProperties = "", bool noTracking = true, int? pageNumber = null, int? pageSize = null);
         IQueryable<TEntity> GetAll();
         Task<TEntity> GetById(object id);
         TEntity Insert(TEntity entity);
 
         void Update(TEntity entityToUpdate);
 
-        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
-
-        TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
+        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, Expression<Func<TEntity,TEntity>> selector = null,
+                                                               string includeProperties = "");
 
         Task<bool> Any(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
 

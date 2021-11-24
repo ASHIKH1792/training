@@ -1,4 +1,6 @@
-﻿namespace DManage.SystemManagement.Domain
+﻿using System.Collections.Generic;
+
+namespace DManage.SystemManagement.Domain
 {
     public class ConfigurationSettings
     {
@@ -14,5 +16,13 @@
 
         public string EventBusVirtualHost { get; set; }
         public string SubscriptionClientName { get; set; }
+
+        public string Authority { get; set; }
+
+        public List<string> IssuerUri { get; set; }
+
+        public string Audience { get; set; }
+
+        public string ApiSecret { get; set; }
     }
 }

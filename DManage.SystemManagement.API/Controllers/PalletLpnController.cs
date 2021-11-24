@@ -3,13 +3,15 @@ using DManage.SystemManagement.Application.CommandHandler.PalletCommandHandler;
 using DManage.SystemManagement.Application.Common.Internal;
 using DManage.SystemManagement.Application.Queries.Internal;
 using DManage.SystemManagement.Application.ResponseDto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace DManage.SystemManagement.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1.0/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class PalletLpnController : BaseApiController
     {
         private readonly IPalletLpnQueries _queries;
@@ -19,7 +21,7 @@ namespace DManage.SystemManagement.API.Controllers
 
         }
         [HttpPost]
-        public async Task<ActionResult<ResponseMessage>> CreateNode(PalletLpnCreateCommand command)
+        public async Task<ActionResult<ResponseMessage>> CreatePalletLpnMapping(PalletLpnCreateCommand command)
         {
             return await Mediator.Send(command);
 

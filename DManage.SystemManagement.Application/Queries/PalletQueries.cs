@@ -18,7 +18,7 @@ namespace DManage.SystemManagement.Application.Queries
 
         public async Task<PalletDto> GePalletById(int palletId)
         {
-            var result= await _unitOfWork.PalletRepository.FirstOrDefaultAsync(s => s.Id == palletId && !s.IsDeleted, "ProductType");
+            var result= await _unitOfWork.PalletRepository.FirstOrDefaultAsync(s => s.Id == palletId && !s.IsDeleted,null, "ProductType");
             return _mapper.Map<PalletDto>(result);
 
         }

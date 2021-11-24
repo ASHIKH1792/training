@@ -30,11 +30,7 @@ namespace DManage.SystemManagement.API.Filter
         {
             var exception = context.Exception as ValidationException;
 
-            var details = new ValidationProblemDetails(exception.Errors)
-            {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
-            };
-
+            var details = new ValidationProblemDetails(exception.Errors);
             context.Result = new BadRequestObjectResult(details);
 
             context.ExceptionHandled = true;
@@ -57,8 +53,7 @@ namespace DManage.SystemManagement.API.Filter
             var details = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "An error occurred while processing your request.",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"
+                Title = "An error occurred while processing your request."
             };
 
             context.Result = new ObjectResult(details)

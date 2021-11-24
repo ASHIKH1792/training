@@ -20,19 +20,19 @@ namespace DManage.SystemManagement.Infrastructure.Repository
             _context = context;
             dbSet = context.Set<TEntity>();
         }
-        public virtual async Task<IEnumerable<TEntity>> Get(
-           Expression<Func<TEntity, bool>> filter = null,
+        public virtual async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null, Expression<Func<TEntity, TEntity>> selector = null,
            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-           string includeProperties = "")
+           string includeProperties = "", bool noTracking = true, int? pageNumber=null,int? pageSize=null)
         {
 
-            IQueryable<TEntity> query = dbSet;
+            IQueryable<TEntity> query;
+            query = noTracking ? dbSet.AsNoTracking() : dbSet;
             if (filter != null)
             {
                 query = query?.Where(filter);
             }
 
-            if (includeProperties != null)
+            if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProperty in includeProperties.Split
                 (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -40,9 +40,17 @@ namespace DManage.SystemManagement.Infrastructure.Repository
                     query = query.Include(includeProperty);
                 }
             }
+            if (selector != null)
+            {
+                query = query.Select(selector);
+            }
             if (orderBy != null)
             {
-                return await orderBy(query)?.ToListAsync();
+                query = orderBy(query);
+            }
+            if (pageNumber != null && pageSize != null)
+            {
+                return await query.Skip((pageSize.GetValueOrDefault() - 1) * pageNumber.GetValueOrDefault()).Take(pageSize.GetValueOrDefault()).ToListAsync();
             }
             else
             {
@@ -50,7 +58,6 @@ namespace DManage.SystemManagement.Infrastructure.Repository
             }
 
         }
-
         public virtual IQueryable<TEntity> GetAll()
         {
             IQueryable<TEntity> query = dbSet;
@@ -88,18 +95,22 @@ namespace DManage.SystemManagement.Infrastructure.Repository
             _context.Entry(entityToUpdate).State = EntityState.Modified;
         }
 
-        public virtual async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "")
+        public virtual async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, Expression<Func<TEntity, TEntity>> selector = null,
+                                                               string includeProperties = "")
         {
 
             IQueryable<TEntity> query = dbSet;
-
-            if (includeProperties != null)
+            if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProperty in includeProperties.Split
                 (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(includeProperty);
                 }
+            }
+            if (selector != null)
+            {
+                query = query.Select(selector);
             }
 
             if (filter != null)
@@ -110,34 +121,11 @@ namespace DManage.SystemManagement.Infrastructure.Repository
 
         }
 
-        public virtual TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "")
-        {
-
-            IQueryable<TEntity> query = dbSet;
-
-            if (includeProperties != null)
-            {
-                foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProperty);
-                }
-            }
-
-            if (filter != null)
-            {
-                return query?.FirstOrDefault(filter);
-            }
-            return  query.FirstOrDefault();
-
-        }
-
         public virtual async Task<bool> Any(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "")
         {
 
             IQueryable<TEntity> query = dbSet;
-
-            if (includeProperties != null)
+            if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProperty in includeProperties.Split
                 (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
