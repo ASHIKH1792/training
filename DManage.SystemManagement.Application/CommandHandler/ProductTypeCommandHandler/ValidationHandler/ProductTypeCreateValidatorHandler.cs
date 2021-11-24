@@ -6,8 +6,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
     {
         public ProductTypeCreateValidatorHandler()
         {
-            RuleFor(v => v.Name)
-               .NotEmpty().WithMessage("Name is required.")
+            RuleForEach(x => x.Name).NotEmpty().WithMessage("Name is required.")
                .MaximumLength(200).WithMessage("Name must not exceed 200 characters.");
         }
 

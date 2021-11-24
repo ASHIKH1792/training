@@ -1,9 +1,13 @@
-﻿using DManage.SystemManagement.Application.Common.Internal;
+﻿using AutoMapper;
+using DManage.SystemManagement.Application.Common.Internal;
+using DManage.SystemManagement.Application.IntegrationEventMessage;
 using DManage.SystemManagement.Domain.Entities;
 using DManage.SystemManagement.Domain.Interface;
 using DotNetCore.CAP;
 using MediatR;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,28 +15,29 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
 {
     public class ProductTypeCreateCommand : IRequest<ResponseMessage>
     {
-        public string Name { get; set; }
+        public List<string> Name { get; set; }
     }
     public class ProductTypeCreateCommandHandler : IRequestHandler<ProductTypeCreateCommand, ResponseMessage>
     {
         private readonly IUnitOfWork _unitofWork;
         private readonly ICapPublisher _capPublisher;
-        public ProductTypeCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher)
+        private readonly IMapper _mapper;
+        public ProductTypeCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher, IMapper mapper)
         {
             _unitofWork = unitofWork;
             _capPublisher = capPublisher;
+            _mapper = mapper;
         }
         public async Task<ResponseMessage> Handle(ProductTypeCreateCommand request, CancellationToken cancellationToken)
         {
-            ProductType productType = new ProductType() { Name = request.Name };
-            _unitofWork.ProductTypeRepository.Insert(productType);
+            IEnumerable<ProductType> lstProductType = PopulateProductType(request);
+            _unitofWork.ProductTypeRepository.InsertRange(lstProductType);
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
             {
-                await PublishMessage(productType);
+                await PublishMessage(lstProductType);
                 return new ResponseMessage()
                 {
-                    Id = productType.Id,
                     Message = ResponseMessageConstant.Success
                 };
             }
@@ -45,9 +50,14 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
             }
         }
 
-        private async Task PublishMessage(ProductType productType)
+        private IEnumerable<ProductType> PopulateProductType(ProductTypeCreateCommand request)
         {
-            await _capPublisher.PublishAsync("SystemManage.ProductType.Create", new { ProductTypeReferenceId=productType.ReferenceId, ProductTypeName = productType.Name,EventId=Guid.NewGuid() });
+            return request.Name.Select(s=>new ProductType() {Name=s,ReferenceId=Guid.NewGuid() });
+        }
+
+        private async Task PublishMessage(IEnumerable<ProductType> lstProductType)
+        {
+            await _capPublisher.PublishAsync("SystemManage.ProductType.Create", new ProductTypeIntegrationEventMessage() { ProductType = _mapper.Map<IEnumerable<ProductTypeEventMessage>>(lstProductType) ,EventId=Guid.NewGuid() });
         }
     }
 }

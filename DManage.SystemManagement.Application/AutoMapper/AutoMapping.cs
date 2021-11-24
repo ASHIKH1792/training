@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using DManage.SystemManagement.Application.CommandHandler.DriverCommandHandler;
 using DManage.SystemManagement.Application.CommandHandler.PalletCommandHandler;
+using DManage.SystemManagement.Application.CommandHandler.ProductTypeCommandHandler;
+using DManage.SystemManagement.Application.IntegrationEventMessage;
 using DManage.SystemManagement.Application.ResponseDto;
 using DManage.SystemManagement.Domain.Entities;
+using System;
 
 namespace DManage.SystemManagement.Application.AutoMapper
 {
@@ -20,7 +23,8 @@ namespace DManage.SystemManagement.Application.AutoMapper
             CreateMap<WareHouseProductTypeMapping, WareHouseProductTypeDto>();
             CreateMap<DriverCreateCommand, Drivers>();
             CreateMap<PalletCreateCommand, Pallet>();
-
+            CreateMap<ProductType, ProductTypeEventMessage>().ForMember(s=>s.ProductTypeName,v=>v.MapFrom(t=>t.Name))
+                .ForMember(s => s.ProductTypeReferenceId, v => v.MapFrom(t => t.ReferenceId));
 
         }
     }

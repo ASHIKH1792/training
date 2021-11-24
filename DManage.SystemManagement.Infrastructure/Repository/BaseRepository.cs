@@ -77,6 +77,11 @@ namespace DManage.SystemManagement.Infrastructure.Repository
             return entityAdded.Entity;
         }
 
+        public virtual void InsertRange(IEnumerable<TEntity> entity)
+        {
+             dbSet.AddRange(entity);
+        }
+
 
         public virtual void DeleteById(object id)
         {

@@ -12,7 +12,7 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.EntityConfiguratio
                 .HasMaxLength(200)
                 .IsRequired();
 
-            builder.Property(t => t.ReferenceId).HasDefaultValueSql("NEWID()");
+            builder.HasIndex(t => t.ReferenceId).IsUnique();
         }
     }
 }

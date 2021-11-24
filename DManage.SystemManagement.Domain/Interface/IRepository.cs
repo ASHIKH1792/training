@@ -18,7 +18,7 @@ namespace DManage.SystemManagement.Domain.Interface
         IQueryable<TEntity> GetAll();
         Task<TEntity> GetById(object id);
         TEntity Insert(TEntity entity);
-
+        void InsertRange(IEnumerable<TEntity> entity);
         void Update(TEntity entityToUpdate);
 
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter = null, Expression<Func<TEntity,TEntity>> selector = null,

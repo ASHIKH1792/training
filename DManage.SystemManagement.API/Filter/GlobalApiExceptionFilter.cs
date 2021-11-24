@@ -60,7 +60,7 @@ namespace DManage.SystemManagement.API.Filter
             {
                 StatusCode = StatusCodes.Status500InternalServerError
             };
-
+            _logger.LogError($"Error Occured---{context.Exception.Message}----{context.Exception.StackTrace}");
             context.ExceptionHandled = true;
 
         }
