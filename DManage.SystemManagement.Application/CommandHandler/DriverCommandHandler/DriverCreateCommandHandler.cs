@@ -53,7 +53,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.DriverCommandHandl
         }
         private async Task PublishMessage(Drivers driver)
         {
-            await _capPublisher.PublishAsync("SystemManage.Truck.Create", new { Id = driver.Id, FirstName = driver.FirstName, LastName = driver.LastName, MobileNumber = driver.MobileNumber });
+            await _capPublisher.PublishAsync("SystemManage.Driver.Create", new { Id = driver.Id, FirstName = driver.FirstName, LastName = driver.LastName, MobileNumber = driver.MobileNumber });
         }
     }
 }

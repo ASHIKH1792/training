@@ -13,6 +13,8 @@ namespace DManage.SystemManagement.Infrastructure.Persistence.EntityConfiguratio
                 .IsRequired();
 
             builder.HasIndex(t => t.ReferenceId).IsUnique();
+
+            builder.Property(t => t.ReferenceId).ValueGeneratedNever();
         }
     }
 }

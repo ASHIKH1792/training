@@ -11,7 +11,7 @@ namespace DManage.SystemManagement.API.Controllers
 {
     [Route("api/v1.0/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ProductTypeController : BaseApiController
     {
         private readonly IProductTypeQueries _queries;

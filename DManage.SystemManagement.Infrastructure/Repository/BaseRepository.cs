@@ -113,15 +113,15 @@ namespace DManage.SystemManagement.Infrastructure.Repository
                     query = query.Include(includeProperty);
                 }
             }
+            if (filter != null)
+            {
+                query = query?.Where(filter);
+            }
             if (selector != null)
             {
                 query = query.Select(selector);
             }
-
-            if (filter != null)
-            {
-                return await query?.FirstOrDefaultAsync(filter);
-            }
+ 
             return await query.FirstOrDefaultAsync();
 
         }

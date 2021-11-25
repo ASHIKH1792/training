@@ -30,7 +30,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
         }
         public async Task<ResponseMessage> Handle(ProductTypeCreateCommand request, CancellationToken cancellationToken)
         {
-            IEnumerable<ProductType> lstProductType = PopulateProductType(request);
+            List<ProductType> lstProductType = PopulateProductType(request);
             _unitofWork.ProductTypeRepository.InsertRange(lstProductType);
             int result= await _unitofWork.CommitAsync(cancellationToken);
             if (result > 0)
@@ -50,9 +50,9 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
             }
         }
 
-        private IEnumerable<ProductType> PopulateProductType(ProductTypeCreateCommand request)
+        private List<ProductType> PopulateProductType(ProductTypeCreateCommand request)
         {
-            return request.Name.Select(s=>new ProductType() {Name=s,ReferenceId=Guid.NewGuid() });
+            return request.Name.Select(s=>new ProductType() {Name=s,ReferenceId=Guid.NewGuid() }).ToList();
         }
 
         private async Task PublishMessage(IEnumerable<ProductType> lstProductType)
