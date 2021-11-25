@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
+using System;
 using System.IO;
 
 namespace DManage.SystemManagement.API
@@ -12,8 +12,16 @@ namespace DManage.SystemManagement.API
         public static readonly string AppName = "SystemManagement";
         public static void Main(string[] args)
         {
-            var configuration = GetConfiguration();
-            CreateHostBuilder(args, configuration).Build().Run();
+            try
+            {
+                var configuration = GetConfiguration();
+                CreateHostBuilder(args, configuration).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, $"Program terminated {AppName}!", AppName);
+
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration configuration) =>

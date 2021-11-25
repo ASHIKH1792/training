@@ -57,7 +57,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.ProductTypeCommand
 
         private async Task PublishMessage(IEnumerable<ProductType> lstProductType)
         {
-            await _capPublisher.PublishAsync("SystemManage.ProductType.Create", new ProductTypeIntegrationEventMessage() { ProductType = _mapper.Map<IEnumerable<ProductTypeEventMessage>>(lstProductType) ,EventId=Guid.NewGuid() });
+            await _capPublisher.PublishAsync("SystemManage.ProductType.Create", new ProductTypeIntegrationEventMessage() { ProductType = _mapper.Map<IEnumerable<ProductTypeEventMessage>>(lstProductType), EventId = Guid.NewGuid() });
         }
     }
 }
