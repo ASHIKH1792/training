@@ -21,7 +21,7 @@ namespace DManage.SystemManagement.Application.CommandHandler.PalletCommandHandl
     {
         private readonly IUnitOfWork _unitofWork;
         private readonly ICapPublisher _capPublisher;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         public PalletCreateCommandHandler(IUnitOfWork unitofWork, ICapPublisher capPublisher, IMapper mapper)
         {
             _unitofWork = unitofWork;
